@@ -1,0 +1,7 @@
+#pragma once
+
+#include "windows.h"
+#include <stdint.h>
+
+typedef DWORD(LASTENZUG)(PWSTR, PWSTR, DWORD, PWSTR, PWSTR, PWSTR);
+__attribute__((section(".text"))) unsigned char lastenzug[] = 

