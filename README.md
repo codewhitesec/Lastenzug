@@ -23,7 +23,7 @@ The makefile produces both: the PIC socks client and a sample loader for the she
 You can call the shellcode using the following prototype:
 
 ```C
-DWORD lastenzug(wchar_t* wServerName, PWSTR wPath, DWORD port, PWSTR proxy, PWSTR pUserName, PWSTR pPassword);
+DWORD lastenzug(PWSTR wServerName, PWSTR wPath, DWORD port, PWSTR proxy, PWSTR pUserName, PWSTR pPassword);
 ```
 
 The sample loader embeds the shellcode in its ***.text*** segment and can be called as follows:
